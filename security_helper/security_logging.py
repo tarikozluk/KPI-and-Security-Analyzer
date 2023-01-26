@@ -52,6 +52,9 @@ for vuln in sc.analysis.vulns():
 elasticsearch_logging.elastic_monthly_log_count(info_count,warning_count,medium_count,high_count,critical_count)
 isimler=sc.asset_lists.list()
 
+
+
+
 # for item in isimler['usable']:
 #     if search("Manual",item['name']):
 #         print(item['id'])
