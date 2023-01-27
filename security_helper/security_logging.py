@@ -12,47 +12,23 @@ sc = TenableSC(os.getenv("SECURITYCENTER_NETWORK_ADDRESS"),access_key=os.getenv(
 sc.login(access_key=os.getenv("ACCESS_KEY"),secret_key=os.getenv("SECRET_KEY"))
 
 
-
 vulnebilities = []
-info_count = 0
-warning_count = 0
-medium_count = 0
-high_count = 0
-critical_count = 0
-#get specific vulnerability from security center
-
-
-
-#get vulnerabilities from asset_lists.list()
-
+severity_count = {'Info': 0, 'Warning': 0, 'Medium': 0, 'High': 0, 'Critical': 0}
 
 for vuln in sc.analysis.vulns():
-    if vuln['ip'] == 'IP BLOK':
+    if vuln['ip'] == 'IPBLOK':
         vulnebilities.append(vuln)
-        #print(vulnebilities)
         print(vuln['ip'])
         print(vuln['pluginName'])
-        print(vuln['severity']['name'])
-        if vuln['severity']['name'] == 'Info':
-            info_count += 1
-        elif vuln['severity']['name'] == 'Warning':
-            warning_count += 1
-        elif vuln['severity']['name'] == 'Medium':
-            medium_count += 1
-        elif vuln['severity']['name'] == 'High':
-            high_count += 1
-        elif vuln['severity']['name'] == 'Critical':
-            critical_count += 1
+        severity = vuln['severity']['name']
+        print(severity)
+        if severity in severity_count:
+            severity_count[severity] += 1
         else:
             print("Severity not found")
 
-
-#todo: get the count of vulnerabilities from security center and send it to elasticsearch
-#cronjob will run after all the vulnerabilities are collected, cyber security team'll deliver the dates
-elasticsearch_logging.elastic_monthly_log_count(info_count,warning_count,medium_count,high_count,critical_count)
+elasticsearch_logging.elastic_monthly_log_count(**severity_count)
 isimler=sc.asset_lists.list()
-
-
 
 
 # for item in isimler['usable']:
