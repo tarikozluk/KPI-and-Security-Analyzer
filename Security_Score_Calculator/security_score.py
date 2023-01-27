@@ -36,8 +36,11 @@ def get_score_values():
     for hit in result:
         score_from_elastic.append(hit['_source'])
     security_score_data = pd.DataFrame(score_from_elastic)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
+    pd.set_option('display.max_colwidth', None)
     security_score_data.columns.values.tolist()
-
     return security_score_data
 
 
