@@ -4,6 +4,8 @@ import os
 from re import search
 from datetime import datetime, timedelta
 from Elasticsearch_Factory import elasticsearch_logging
+import json
+
 
 #get .env path from root
 load_dotenv("../.env")
@@ -13,21 +15,28 @@ sc.login(access_key=os.getenv("ACCESS_KEY"),secret_key=os.getenv("SECRET_KEY"))
 
 
 vulnebilities = []
-severity_count = {'Info': 0, 'Warning': 0, 'Medium': 0, 'High': 0, 'Critical': 0}
-
+#severity_count = {'Info': 0, 'Low': 0, 'Medium': 0, 'High': 0, 'Critical': 0}
+#todo: scorecarddaki iştiraklerin verilerin olduğu sadece uygulama sunucuları eklenecek; iştiraK:ip eşleştirmesi yaparak gerekli parametreleri get edecek.
 for vuln in sc.analysis.vulns():
-    if vuln['ip'] == 'IPBLOK':
-        vulnebilities.append(vuln)
-        print(vuln['ip'])
-        print(vuln['pluginName'])
+    if vuln['ip'] == 'IP BLOK':
+        #vulnebilities.append(vuln)
+        vulnebilities_ip = vuln['ip']
+        vulnebilities_plugin= vuln['pluginName']
         severity = vuln['severity']['name']
-        print(severity)
-        if severity in severity_count:
-            severity_count[severity] += 1
-        else:
-            print("Severity not found")
+        json_vulnebility = {
+            'IP_adress' : vulnebilities_ip,
+            'Plugin_Name': vulnebilities_plugin,
+            'severity' : severity
+        }
+        vulnebilities.append(json_vulnebility)
+    #print(json.dumps(vulnebilities))
+        #print(severity)
+    # if severity in severity_count:
+    #     severity_count[severity] += 1
+    # else:
+    #     print("Severity not found")
 
-elasticsearch_logging.elastic_monthly_log_count(**severity_count)
+#elasticsearch_logging.elastic_monthly_log_count(**severity_count)
 isimler=sc.asset_lists.list()
 
 
